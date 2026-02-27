@@ -1,0 +1,15 @@
+# Maven / Java
+/target
+*.log
+*.class
+
+# IDE / Eclipse / STS
+/.idea
+*.iml
+*.classpath
+*.project
+/.metadata
+
+# OS files
+.DS_Store
+Thumbs.db
