@@ -21,17 +21,21 @@ public class RegistrationService {
 	}
 
 	public User registerUser(UserRegistrationRequest request) {
-		if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-			throw new RuntimeException("Email already registered");
-		}
 
-		User user = new User();
-		user.setName(request.getName());
-		user.setEmail(request.getEmail());
-		user.setProvider(Provider.LOCAL);
-		user.setPassword(passwordEncoder.encode(request.getPassword()));
-		user.setRole(Role.ROLE_USER);
+	    if (userRepository.existsByEmail(request.getEmail())) {
+	        throw new IllegalArgumentException("User already registered");
+	    }
 
-		return userRepository.save(user);
+	    User user = new User();
+	    user.setName(request.getName());
+	    user.setEmail(request.getEmail());
+	    user.setProvider(Provider.LOCAL);
+	    user.setPassword(passwordEncoder.encode(request.getPassword()));
+	    user.setRole(Role.ROLE_USER);
+
+	    // ⭐ generate readable unique userId
+	    //user.setUserId(generateUniqueUserId(request.getName()));
+
+	    return userRepository.save(user);
 	}
 }

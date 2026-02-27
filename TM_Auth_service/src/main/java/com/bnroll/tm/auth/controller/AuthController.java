@@ -1,5 +1,6 @@
 package com.bnroll.tm.auth.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +30,20 @@ public class AuthController {
 	@PostMapping("/register")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationRequest request) {
 		User savedUser = registrationService.registerUser(request);
-		return ResponseEntity.ok("User registered with ID: " + savedUser.getId());
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("message", "User registered successfully");
+		response.put("userId", savedUser.getUserId());
+		response.put("id", savedUser.getId());
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
 	@PostMapping("/login")
 	public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest request) {
-		try {
-			String token = loginService.loginUser(request);
-			return ResponseEntity.ok(Map.of("token", "Bearer " + token));
-		} catch (RuntimeException ex) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", ex.getMessage()));
-		}
+
+		String token = loginService.loginUser(request);
+
+		return ResponseEntity.ok(Map.of("message", "Login successful", "token", "Bearer " + token));
 	}
 }

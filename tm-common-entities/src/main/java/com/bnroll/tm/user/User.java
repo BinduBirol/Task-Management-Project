@@ -19,7 +19,7 @@ public class User extends BaseEntity {
 	@Column(nullable = false, unique = true)
 	private String email;
 
-	@Column(nullable = false, unique = true, updatable = true)
+	@Column(nullable = true, unique = true, updatable = true)
 	private String userId; // unique string ID
 
 	@Enumerated(EnumType.STRING)

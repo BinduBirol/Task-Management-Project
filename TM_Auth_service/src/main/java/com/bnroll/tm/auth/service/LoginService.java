@@ -26,19 +26,15 @@ public class LoginService {
 	}
 
 	public String loginUser(LoginRequest request) {
-		try {
-			Authentication auth = authenticationManager
-					.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
-			// At this point, authentication succeeded
-			User user = userRepository.findByEmail(request.getEmail())
-					.orElseThrow(() -> new RuntimeException("User not found"));
+		Authentication authentication = authenticationManager
+				.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
-			// Generate JWT token
-			return jwtUtil.generateToken(user.getEmail());
+		// authentication successful at this point
 
-		} catch (BadCredentialsException | UsernameNotFoundException ex) {
-			throw new RuntimeException("Invalid email or password");
-		}
+		User user = userRepository.findByEmail(request.getEmail())
+				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+		return jwtUtil.generateToken(user.getEmail());
 	}
 }
