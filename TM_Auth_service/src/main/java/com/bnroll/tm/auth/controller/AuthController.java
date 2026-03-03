@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bnroll.tm.auth.dto.LoginRequest;
 import com.bnroll.tm.auth.dto.UserRegistrationRequest;
+import com.bnroll.tm.auth.service.GoogleLoginService;
 import com.bnroll.tm.auth.service.LoginService;
 import com.bnroll.tm.auth.service.RegistrationService;
 import com.bnroll.tm.user.User;
@@ -30,7 +31,11 @@ public class AuthController {
 
 	@Autowired
 	private LoginService loginService;
+	
+	@Autowired
+	private GoogleLoginService googleLoginService;
 
+	@Operation(summary = "Register a new user")
 	@PostMapping("/register")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationRequest request) {
 		User savedUser = registrationService.registerUser(request);
@@ -50,5 +55,14 @@ public class AuthController {
 		String token = loginService.loginUser(request);
 
 		return ResponseEntity.ok(Map.of("message", "Login successful", "token", "Bearer " + token));
+	}
+	
+	@PostMapping("/login/google")
+	public ResponseEntity<?> googleLogin(@RequestBody String idToken) throws Exception {
+	    String token = googleLoginService.loginWithGoogle(idToken);
+	    return ResponseEntity.ok(Map.of(
+	        "message", "Login successful via Google",
+	        "token", "Bearer " + token
+	    ));
 	}
 }
