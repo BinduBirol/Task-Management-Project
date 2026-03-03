@@ -3,6 +3,7 @@ package com.bnroll.tm.auth.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +17,12 @@ import com.bnroll.tm.auth.service.LoginService;
 import com.bnroll.tm.auth.service.RegistrationService;
 import com.bnroll.tm.user.User;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
+@Tag(name = "Authentication", description = "Endpoints for user authentication")
 public class AuthController {
 
 	@Autowired
@@ -38,7 +42,8 @@ public class AuthController {
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
-
+	
+	@Operation(summary = "Login user and get JWT token")
 	@PostMapping("/login")
 	public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest request) {
 
