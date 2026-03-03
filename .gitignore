@@ -1,9 +1,14 @@
 # Maven / Java
-/target
+/target/
+/logs/
+/bin/
+**/bin/
+/bin
+**/.settings/
 *.log
 *.class
 
-# IDE / Eclipse / STS
+# IDE / Eclipse / STS / IntelliJ
 /.idea
 *.iml
 *.classpath
@@ -13,3 +18,8 @@
 # OS files
 .DS_Store
 Thumbs.db
+
+# Build artifacts
+*.jar
+*.war
+*.ear
