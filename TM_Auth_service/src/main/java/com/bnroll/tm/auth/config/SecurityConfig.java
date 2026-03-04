@@ -13,6 +13,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import com.bnroll.tm.auth.service.CustomUserDetailsService;
 import org.springframework.security.config.Customizer;
 
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 @Configuration
 public class SecurityConfig {
 
@@ -47,5 +50,18 @@ public class SecurityConfig {
 	public AuthenticationManager authManager(HttpSecurity http) throws Exception {
 		return http.getSharedObject(AuthenticationManagerBuilder.class).userDetailsService(userDetailsService)
 				.passwordEncoder(passwordEncoder()).and().build();
+	}
+	
+	@Bean
+	public WebMvcConfigurer corsConfigurer() {
+	    return new WebMvcConfigurer() {
+	        @Override
+	        public void addCorsMappings(CorsRegistry registry) {
+	            registry.addMapping("/**")  // allow all endpoints
+	                    .allowedOrigins("http://localhost:3039") // allow your React app
+	                    .allowedMethods("*")
+	                    .allowedHeaders("*");
+	        }
+	    };
 	}
 }
