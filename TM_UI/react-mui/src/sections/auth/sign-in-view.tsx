@@ -51,7 +51,7 @@ export function SignInView() {
       }
 
       const res = await axios.post('http://localhost:8081/auth/login/google', {
-        idToken: credentialResponse.credential,
+        credential: credentialResponse.credential,
       });
 
       const token = res.data.token;

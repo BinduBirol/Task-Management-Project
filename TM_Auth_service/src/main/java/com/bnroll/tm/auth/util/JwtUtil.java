@@ -20,18 +20,28 @@ public class JwtUtil {
 	@Value("${jwt.expiration}")
 	private long expiration;
 
-    private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
-    
+	private SecretKey getSigningKey() {
+		byte[] keyBytes = Decoders.BASE64.decode(secret);
+		return Keys.hmacShaKeyFor(keyBytes);
+	}
 
-    public String generateToken(String email) {
-    	return Jwts.builder()
-    	        .setSubject(email)
-    	        .setIssuedAt(new Date())
-    	        .setExpiration(new Date(System.currentTimeMillis() + expiration))
-    	        .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-    	        .compact();
-    }
+	public String generateToken(String email) {
+		return Jwts.builder().setSubject(email).setIssuedAt(new Date())
+				.setExpiration(new Date(System.currentTimeMillis() + expiration))
+				.signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
+	}
+
+	public String extractUsername(String token) {
+		return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody().getSubject();
+	}
+
+	public boolean validateToken(String token) {
+		try {
+			Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
+
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
 }

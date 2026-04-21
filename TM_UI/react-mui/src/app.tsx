@@ -8,9 +8,12 @@ import Fab from '@mui/material/Fab';
 
 import { usePathname } from 'src/routes/hooks';
 
+import { AuthProvider } from 'src/context/AuthContext';
 import { ThemeProvider } from 'src/theme/theme-provider';
 
 import { Iconify } from 'src/components/iconify';
+
+
 
 // ----------------------------------------------------------------------
 
@@ -42,9 +45,11 @@ export default function App({ children }: AppProps) {
 
   return (
     <ThemeProvider>
+	<AuthProvider>
       {children}
       {githubButton()}
       <ToastContainer position="top-right" autoClose={3000} />
+	  </AuthProvider>
     </ThemeProvider>
   );
 }

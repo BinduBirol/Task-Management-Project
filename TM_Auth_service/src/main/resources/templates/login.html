@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Code n Roll - Login</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Google Identity -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body class="bg-dark">
+
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow p-4 text-center" style="max-width: 400px; width: 100;">
+        
+        <h4 class="mb-2">Code n Roll</h4>
+        <p class="text-muted mb-4">Build • Scale • Repeat</p>
+
+        <!-- Google Login -->
+        <div id="g_id_onload"
+             data-client_id="937469130987-olf8n3ebkjuh2fc9h190frplfi386m4u.apps.googleusercontent.com"
+             data-callback="handleCredentialResponse">
+        </div>
+
+        <div class="d-flex justify-content-center mb-3">
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-size="large"
+                 data-theme="outline"
+                 data-text="sign_in_with"
+                 data-shape="pill">
+            </div>
+        </div>
+
+        <div id="status" class="text-muted small"></div>
+    </div>
+</div>
+
+<script>
+function handleCredentialResponse(response) {
+    const idToken = response.credential;
+
+    $("#status").text("Signing in...");
+
+    $.ajax({
+        url: "http://localhost:8081/auth/login/google",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ credential: idToken }),
+        success: function(res) {
+            $("#status").text(JSON.stringify(res));
+            $(".g_id_signin").hide();
+        },
+        error: function(err) {
+            $("#status").text("Login failed!");
+            console.error(err);
+        }
+    });
+}
+</script>
+
+</body>
+</html>
