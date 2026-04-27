@@ -5,9 +5,11 @@ import { useMediaQuery } from "@mui/material";
 
 import App from "./App.jsx";
 import { getTheme } from "./theme/theme";
-import {getStoredThemeMode } from "./configs/themeMode.js";
+import { getStoredThemeMode } from "./configs/themeMode.js";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GOOGLE_CLIENT_ID } from "./configs/auth.js";
+import GlobalToast from "./components/GlobalToast";
+import GlobalLoader from "./components/GlobalLoader";
 
 export default function Root() {
 
@@ -33,6 +35,8 @@ export default function Root() {
         <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
+                <GlobalLoader />
+                <GlobalToast />
                 <App />
             </ThemeProvider>
         </GoogleOAuthProvider>

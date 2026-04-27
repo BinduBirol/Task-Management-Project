@@ -1,10 +1,21 @@
 import { useState } from "react";
-import { TextField, Button, Container, Typography, Box } from "@mui/material";
-import { Dialog, DialogTitle, DialogContent } from "@mui/material";
-import { AUTH_API_BASE_URL } from "../configs/api";
+import {
+    TextField,
+    Button,
+    Container,
+    Typography,
+    Box,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    Card,
+    CardContent
+} from "@mui/material";
+
 import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
-
+import { login, googleLogin } from "../auth/authService";
+import { uiStore } from "../store/uiStore";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -14,121 +25,113 @@ export default function Login() {
         open: false,
         message: ""
     });
-	
-	const navigate = useNavigate();
 
+    const navigate = useNavigate();
+
+    // EMAIL LOGIN
     const handleLogin = async () => {
         try {
-            const res = await fetch(AUTH_API_BASE_URL + "/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ email, password })
-            });
+            const data = await login(email, password);
 
-            const data = await res.json();
-
-            console.log("Response:", data);
-
-            if (res.ok) {
+            if (data?.token) {
                 localStorage.setItem("token", data.token);
                 navigate("/dashboard");
             } else {
-                setErrorDialog({
-                    open: true,
-                    message: data.message || "Login failed"
-                });
+                uiStore.showToast(data?.message || "Login failed", "error");
             }
 
         } catch (error) {
             console.error(error);
-            setErrorDialog({
-                open: true,
-                message: "Server error"
-            });
+            uiStore.showToast("Server error", "error");
         }
     };
-	
-	
 
-    //Google login
+    //GOOGLE LOGIN
     const handleGoogleSuccess = async (credentialResponse) => {
         try {
             const idToken = credentialResponse.credential;
 
-            const res = await fetch(`${AUTH_API_BASE_URL}/login/google`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ 'credential': idToken })
-            });
+            const data = await googleLogin(idToken);
 
-            const data = await res.json();
-
-            if (res.ok) {
+            if (data?.token) {
                 localStorage.setItem("token", data.token);
                 navigate("/dashboard");
             } else {
-                setErrorDialog({
-                    open: true,
-                    message: "Google login failed"
-                });
+                uiStore.showToast("Google login failed", "error");
             }
 
         } catch (err) {
             console.log(err);
-            setErrorDialog({
-                open: true,
-                message: "Google login error"
-            });
+            uiStore.showToast("Server error", "error");
         }
     };
+
     return (
         <Container maxWidth="xs">
-            <Box sx={{ mt: 10, textAlign: "center" }}>
-                <Typography variant="h5">
-                    Task Time Tracker Login
-                </Typography>
+            <Box sx={{
+                minHeight: "100vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+            }}>
 
-                <TextField
-                    fullWidth
-                    label="Email"
-                    margin="normal"
-                    onChange={(e) => setEmail(e.target.value)}
-                />
 
-                <TextField
-                    fullWidth
-                    type="password"
-                    label="Password"
-                    margin="normal"
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-
-                <Button
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 2 }}
-                    onClick={handleLogin}
+                <Card
+                    sx={{
+                        width: "100%",
+                        p: 2,
+                        boxShadow: 6,
+                        borderRadius: 3
+                    }}
                 >
-                    Login
-                </Button>
+                    <CardContent>
 
-                {/* OR divider */}
-                <Typography sx={{ my: 2 }}>OR</Typography>
+                        <Typography variant="h5" sx={{ mb: 2, textAlign: "center" }}>
+                            Task Time Tracker
+                        </Typography>
 
-                {/* GOOGLE LOGIN */}
-                <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={() =>
-                        setErrorDialog({
-                            open: true,
-                            message: "Google login failed"
-                        })
-                    }
-                />
+                        <TextField
+                            fullWidth
+                            label="Email"
+                            margin="normal"
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+
+                        <TextField
+                            fullWidth
+                            type="password"
+                            label="Password"
+                            margin="normal"
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 2 }}
+                            onClick={handleLogin}
+                        >
+                            Login
+                        </Button>
+
+                        <Typography sx={{ my: 2, textAlign: "center" }}>
+                            OR
+                        </Typography>
+
+                        <Box sx={{ display: "flex", justifyContent: "center" }}>
+                            <GoogleLogin
+                                onSuccess={handleGoogleSuccess}
+                                onError={() =>
+                                    setErrorDialog({
+                                        open: true,
+                                        message: "Google login failed"
+                                    })
+                                }
+                            />
+                        </Box>
+
+                    </CardContent>
+                </Card>
 
                 {/* ERROR DIALOG */}
                 <Dialog
