@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Login from "./auth/Login";
 import ProtectedRoute from "./auth/ProtectedRoute";
+import Profile from "./pages/Profile";
 
 export default function App() {
     return (
@@ -24,6 +25,7 @@ export default function App() {
                 {/* PROTECTED */}
                 <Route element={<ProtectedRoute />}>
                     <Route path="/dashboard" element={<Dashboard />} />
+					<Route path="/profile" element={<Profile />} />
                 </Route>
 
             </Routes>
