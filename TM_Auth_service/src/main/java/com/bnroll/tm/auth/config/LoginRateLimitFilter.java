@@ -36,7 +36,7 @@ public class LoginRateLimitFilter extends OncePerRequestFilter {
 				redis.expire(key, Duration.ofMinutes(1));
 			}
 
-			if (count > 10) {
+			if (count > 2) {
 				response.setStatus(429);
 				response.getWriter().write("Too many login attempts");
 				return;

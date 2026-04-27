@@ -14,6 +14,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { setStoredThemeMode } from "../configs/themeMode";
+import { uiStore } from "../store/uiStore";
 
 export default function TopNav() {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -70,6 +71,7 @@ export default function TopNav() {
 
                 <Button color="inherit" onClick={() => {
                     localStorage.removeItem("token");
+					uiStore.showToast("Logged out successfully", "info");
                     navigate("/login");
                 }}>
                     Logout

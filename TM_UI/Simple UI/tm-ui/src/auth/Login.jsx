@@ -35,6 +35,7 @@ export default function Login() {
 
             if (data?.token) {
                 localStorage.setItem("token", data.token);
+				uiStore.showToast("Login successful", "success");
                 navigate("/dashboard");
             } else {
                 uiStore.showToast(data?.message || "Login failed", "error");
@@ -55,6 +56,7 @@ export default function Login() {
 
             if (data?.token) {
                 localStorage.setItem("token", data.token);
+				uiStore.showToast("Login successful", "success");
                 navigate("/dashboard");
             } else {
                 uiStore.showToast("Google login failed", "error");
