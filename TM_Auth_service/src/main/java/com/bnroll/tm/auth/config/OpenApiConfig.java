@@ -13,7 +13,7 @@ public class OpenApiConfig {
 	@Bean
 	public OpenAPI taskManagementOpenAPI() {
 		return new OpenAPI()
-				.info(new Info().title("Task Management Authentication API")
+				.info(new Info().title("Task Tracker Authentication API")
 						.description("Authentication and User Management APIs").version("v1.0")
 						.contact(new Contact().name("Bindu Birol").email("bindu@example.com")))
 				.externalDocs(new ExternalDocumentation().description("Project Repository")

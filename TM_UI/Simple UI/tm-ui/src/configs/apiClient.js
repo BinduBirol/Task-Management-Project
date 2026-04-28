@@ -10,19 +10,33 @@ export const apiClient = async (url, options = {}) => {
             ...options,
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                ...(token ? { Authorization: `${token}` } : {}),
                 ...options.headers
             }
         });
 
+        // 🔥 handle auth failure
         if (res.status === 401) {
             localStorage.removeItem("token");
             window.location.href = "/login";
             return;
         }
 
-        return await res.json();
+        const data = await res.json().catch(() => ({}));
 
+        // 🔥 handle non-2xx responses properly
+        if (!res.ok) {
+            throw {
+                status: res.status,
+                ...data
+            };
+        }
+
+        return data;
+
+    } catch (error) {
+        console.error("API Error:", error);
+        throw error;
     } finally {
         uiStore.setLoading(false);
     }

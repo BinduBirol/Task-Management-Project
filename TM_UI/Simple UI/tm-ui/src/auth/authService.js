@@ -16,5 +16,5 @@ export const googleLogin = (idToken) => {
 };
 
 export const getProfile = () => {
-    return apiClient(`${AUTH_API_BASE_URL}/me`);
+    return apiClient(`${AUTH_API_BASE_URL}/user/this`);
 };

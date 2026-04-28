@@ -59,7 +59,7 @@ export default function Login() {
 				uiStore.showToast("Login successful", "success");
                 navigate("/dashboard");
             } else {
-                uiStore.showToast("Google login failed", "error");
+                uiStore.showToast(data?.message || "Google login failed", "error");
             }
 
         } catch (err) {

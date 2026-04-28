@@ -1,4 +1,4 @@
-package com.bnroll.tm.auth.config;
+package com.bnroll.tm.auth.config.redis;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class LoginRateLimitFilter extends OncePerRequestFilter {
+public class RateLimitFilter extends OncePerRequestFilter {
 
 	@Autowired
 	private StringRedisTemplate redis;
@@ -24,11 +24,12 @@ public class LoginRateLimitFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		String path = request.getRequestURI();
+		String method = request.getMethod();
 
-		if ("/login".equals(path)) {
+		if ("POST".equalsIgnoreCase(method) && path.contains("/login")) {
 
 			String ip = request.getRemoteAddr();
-			String key = "login:ip:" + ip;
+			String key = "rl:login:ip:" + ip;
 
 			Long count = redis.opsForValue().increment(key);
 
@@ -36,13 +37,26 @@ public class LoginRateLimitFilter extends OncePerRequestFilter {
 				redis.expire(key, Duration.ofMinutes(1));
 			}
 
-			if (count > 2) {
+			if (count > 3) {
+
 				response.setStatus(429);
-				response.getWriter().write("Too many login attempts");
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+
+				String json = """
+						{
+						  "message": "Too many login attempts. Try again later.",
+						  "errorCode": "RATE_LIMIT_EXCEEDED",
+						  "retryAfterSeconds": 60
+						}
+						""";
+
+				response.getWriter().write(json);
 				return;
 			}
 		}
 
 		filterChain.doFilter(request, response);
 	}
+
 }

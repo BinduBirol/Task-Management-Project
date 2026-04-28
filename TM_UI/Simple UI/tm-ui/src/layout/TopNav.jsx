@@ -42,7 +42,7 @@ export default function TopNav() {
             <Toolbar>
 
                 <Typography sx={{ flexGrow: 1 }}>
-                    TM UI Dashboard
+                    Task Time Tracker
                 </Typography>
 
                 {/* THEME ICON */}

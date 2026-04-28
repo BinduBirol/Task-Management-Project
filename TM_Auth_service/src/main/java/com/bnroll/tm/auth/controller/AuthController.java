@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticatedPrincipal;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bnroll.tm.auth.dto.GoogleLoginRequest;
 import com.bnroll.tm.auth.dto.LoginRequest;
 import com.bnroll.tm.auth.dto.UserRegistrationRequest;
+import com.bnroll.tm.auth.dto.UserViewDTO;
 import com.bnroll.tm.auth.service.GoogleLoginService;
 import com.bnroll.tm.auth.service.LoginService;
 import com.bnroll.tm.auth.service.RegistrationService;
@@ -71,9 +73,9 @@ public class AuthController {
 
 	@Operation(summary = "Gets logged in user info")
 	@GetMapping("/user/this")
-	public User getLoggedInUser(AuthenticatedPrincipal auth) {
+	public UserViewDTO getLoggedInUser(Authentication auth) {
 		String name = auth.getName();
-		User user = loginService.getLoggedInUser(name);
+		UserViewDTO user = loginService.getLoggedInUser(name);
 		return user;
 	}
 
